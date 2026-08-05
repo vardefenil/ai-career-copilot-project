@@ -1,0 +1,9 @@
+[tool.pyrefly]
+# Point Pyrefly to the virtual environment so it finds all installed packages
+python_interpreter = ".venv/Scripts/python.exe"
+venv_path = ".venv"
+
+# Project source roots
+project_includes = ["agent", "ingestion"]
+
+# Suppress noisy third-party deprecation warnings in type checking
