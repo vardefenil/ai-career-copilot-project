@@ -1,48 +1,40 @@
 import os
+import glob
 from langchain_community.vectorstores import FAISS
-from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import TextLoader, PyPDFLoader
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import TextLoader
 
+DATA_DIR = "data"
 
-#load
-loader = TextLoader("data/fenil_resume (1).md", encoding="utf-8")
-print("loading PDF.....")
-documents = loader.load()
-print(f"Loaded {len(documents)} pages.")
+def load_all_documents(data_dir):
+    documents = []
 
-#split documents into chunks 
+    for filepath in glob.glob(os.path.join(data_dir, "*.md")) + glob.glob(os.path.join(data_dir, "*.txt")):
+        print(f"Loading: {filepath}")
+        loader = TextLoader(filepath, encoding="utf-8")
+        documents.extend(loader.load())
 
+    for filepath in glob.glob(os.path.join(data_dir, "*.pdf")):
+        print(f"Loading: {filepath}")
+        loader = PyPDFLoader(filepath)
+        documents.extend(loader.load())
 
-text_splitter=RecursiveCharacterTextSplitter(
-    chunk_size=1000,
-    chunk_overlap=200
-)
-print("Splitting documents...") 
+    return documents
+
+print("Loading all documents from data/ ...")
+documents = load_all_documents(DATA_DIR)
+print(f"Loaded {len(documents)} document(s) total.")
+
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+print("Splitting documents...")
 chunks = text_splitter.split_documents(documents)
 print(f"Created {len(chunks)} chunks.")
 
-
 print("Creating embeddings...")
-#create embeddings
+embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
-embeddings=HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-
-#store in FAISS
-
-
-vectorstore = FAISS.from_documents(
-    documents=chunks,
-    embedding=embeddings
-)
+vectorstore = FAISS.from_documents(documents=chunks, embedding=embeddings)
 print("Saving FAISS index...")
-#save index
 vectorstore.save_local("faiss_index")
 print("Done! FAISS index created successfully.")
-
-vectorstore = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-results = vectorstore.similarity_search("credit card fraud detection ", k=5)
-for r in results:
-    print(r.page_content)
-    print("---")
