@@ -34,7 +34,7 @@ agent = create_react_agent(llm, tools, prompt=SYSTEM_PROMPT)
 
 # ── Main ───────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    query = "give education details in resume."
+    query = "give me best ai projects from my resume."
     print(f"Querying agent: '{query}'\n")
 
     try:
