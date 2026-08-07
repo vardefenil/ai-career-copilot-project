@@ -35,6 +35,6 @@ print("Creating embeddings...")
 embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
 vectorstore = FAISS.from_documents(documents=chunks, embedding=embeddings)
-print("Saving FAISS index...")
+print("Saving FAISS index..")
 vectorstore.save_local("faiss_index")
 print("Done! FAISS index created successfully.")
