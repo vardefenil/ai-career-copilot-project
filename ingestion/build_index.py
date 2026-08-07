@@ -4,7 +4,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_community.document_loaders import TextLoader, PyPDFLoader
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-
+#all documents can load
 DATA_DIR = "data"
 
 def load_all_documents(data_dir):
