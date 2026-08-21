@@ -1,0 +1,13 @@
+# Render.com deployment configuration
+# This file tells Render how to deploy the FastAPI backend
+
+services:
+  - type: web
+    name: ai-career-copilot-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false   # Set this in Render dashboard → Environment
+    autoDeploy: true

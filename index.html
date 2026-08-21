@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="refresh" content="0; url=frontend/index.html" />
+  <title>AI Career Copilot — Fenil Varde</title>
+  <meta name="description" content="AI Career Copilot by Fenil Varde — RAG-powered AI agent for resume Q&A" />
+  <style>
+    body {
+      margin: 0;
+      background: #0a0e1a;
+      color: #f1f5f9;
+      font-family: Inter, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(99,102,241,0.3);
+      border-top-color: #6366f1;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="spinner"></div>
+  <p>Loading AI Career Copilot...</p>
+  <script>window.location.replace("frontend/index.html");</script>
+</body>
+</html>

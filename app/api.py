@@ -1,14 +1,17 @@
 """
 API endpoint logic for AI Career Copilot.
-Handles both LIVE mode (uses the real LangGraph agent) and DEMO mode (uses pre-built responses).
+Handles both LIVE mode (uses the real LangGraph agent + Gemini) and DEMO mode (pre-built responses).
 """
 
+import os
 import time
-from typing import Generator
 
+from dotenv import load_dotenv
 from fastapi import HTTPException
-from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
+
+# Load .env from project root
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 
 from app.demo_responses import get_demo_response
 

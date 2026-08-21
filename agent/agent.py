@@ -1,19 +1,40 @@
+"""
+AI Career Copilot — Agent
+Now powered by Google Gemini (gemini-1.5-flash) via langchain-google-genai.
+Falls back gracefully if API key is missing.
+"""
+
 import sys
 import io
-from langchain_ollama import ChatOllama
+import os
+from dotenv import load_dotenv
+
+# Load .env from project root
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
+
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage
-from langgraph.prebuilt import create_react_agent  # noqa: deprecated – langgraph.prebuilt is still the correct import
+from langgraph.prebuilt import create_react_agent
 from agent.tools import search_my_background
 
-# Fix Windows console encoding so special characters print correctly
+# Fix Windows console encoding
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")  # type: ignore[attr-defined]
 
-# ── LLM ────────────────────────────────────────────────────────────────────
-llm = ChatOllama(
-    model="llama3.1:8b",
+# ── Gemini LLM ─────────────────────────────────────────────────────────────
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+
+if not GEMINI_API_KEY:
+    raise EnvironmentError(
+        "Missing GEMINI_API_KEY in your .env file.\n"
+        "Add: GEMINI_API_KEY=your_key_here"
+    )
+
+llm = ChatGoogleGenerativeAI(
+    model="gemini-1.5-flash",
+    google_api_key=GEMINI_API_KEY,
     temperature=0,
-    num_predict=512,
+    max_output_tokens=1024,
 )
 
 # ── Tools ──────────────────────────────────────────────────────────────────
@@ -21,20 +42,20 @@ tools = [search_my_background]
 
 # ── System prompt ──────────────────────────────────────────────────────────
 SYSTEM_PROMPT = (
-    "You are a helpful career assistant. "
-    "You have access to a tool called `search_my_background` that searches the user's resume. "
-    "Always use this tool to answer questions about projects, skills, education, or experience. "
-    "Never return an empty response — always provide a complete, clear answer."
+    "You are a helpful AI Career Copilot for Fenil Varde. "
+    "You have access to a tool called `search_my_background` that searches Fenil's resume. "
+    "Always use this tool to answer questions about projects, skills, education, experience, or achievements. "
+    "Provide clear, well-formatted, complete answers. Use bullet points and bold text where helpful. "
+    "Never return an empty response."
 )
 
 # ── Agent ──────────────────────────────────────────────────────────────────
-# create_react_agent from langgraph.prebuilt — prompt kwarg accepted since langgraph ≥0.2
 agent = create_react_agent(llm, tools, prompt=SYSTEM_PROMPT)
 
 
 # ── Main ───────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    query = "give me best ai projects from my resume."
+    query = "List all AI projects from my resume with tech stack details."
     print(f"Querying agent: '{query}'\n")
 
     try:
@@ -45,4 +66,4 @@ if __name__ == "__main__":
         print(safe)
     except Exception as e:
         print(f"\n[ERROR] Agent failed: {e}")
-        print("Tip: Make sure Ollama is running (`ollama serve`) and the model is pulled (`ollama pull llama3.1:8b`)")
+        print("Tip: Make sure GEMINI_API_KEY is set in your .env file.")
