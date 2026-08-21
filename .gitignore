@@ -35,3 +35,11 @@ Thumbs.db
 # Temp files
 tempCodeRunnerFile.py
 *.log
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Shortcuts / links
+*.lnk

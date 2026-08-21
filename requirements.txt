@@ -46,3 +46,8 @@ pydantic-settings==2.14.2
 requests==2.34.2
 tqdm==4.70.0
 rich==15.0.0
+
+# Web API
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+python-multipart==0.0.12
