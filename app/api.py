@@ -65,7 +65,16 @@ def _run_live_agent(query: str) -> str:
     agent = _get_agent()
     response = agent.invoke({"messages": [HumanMessage(content=query)]})
     final_msg = response["messages"][-1]
-    return final_msg.content.encode("utf-8", errors="replace").decode("utf-8")
+    content = final_msg.content
+    if isinstance(content, list):
+        parts = []
+        for item in content:
+            if isinstance(item, dict) and "text" in item:
+                parts.append(item["text"])
+            elif isinstance(item, str):
+                parts.append(item)
+        content = "\n".join(parts)
+    return str(content)
 
 
 # ── Chat handler ───────────────────────────────────────────────────────────

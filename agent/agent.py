@@ -31,7 +31,7 @@ if not GEMINI_API_KEY:
     )
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash",
+    model="gemini-3.6-flash",
     google_api_key=GEMINI_API_KEY,
     temperature=0,
     max_output_tokens=1024,
@@ -62,8 +62,16 @@ if __name__ == "__main__":
         response = agent.invoke({"messages": [HumanMessage(content=query)]})
         print("\n--- Agent Response ---")
         final_msg = response["messages"][-1]
-        safe = final_msg.content.encode("utf-8", errors="replace").decode("utf-8")
-        print(safe)
+        content = final_msg.content
+        if isinstance(content, list):
+            parts = []
+            for item in content:
+                if isinstance(item, dict) and "text" in item:
+                    parts.append(item["text"])
+                elif isinstance(item, str):
+                    parts.append(item)
+            content = "\n".join(parts)
+        print(content)
     except Exception as e:
         print(f"\n[ERROR] Agent failed: {e}")
         print("Tip: Make sure GEMINI_API_KEY is set in your .env file.")
