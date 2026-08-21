@@ -36,6 +36,32 @@
     <!-- ── Sidebar ───────────────────────────────────────────── -->
     <aside class="sidebar" role="complementary" aria-label="Profile and AI tools">
 
+      <!-- App Brand Header -->
+      <div class="sidebar-brand">
+        <div class="brand-logo-wrap">
+          <svg class="brand-logo-svg" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="36" height="36" rx="10" fill="url(#brandGrad)"/>
+            <path d="M10 15C10 11.134 13.134 8 17 8C20.866 8 24 11.134 24 15V22C24 24.7614 21.7614 27 19 27H15C12.2386 27 10 24.7614 10 22V15Z" fill="white" fill-opacity="0.95"/>
+            <circle cx="14" cy="16" r="2" fill="#4F46E5"/>
+            <circle cx="20" cy="16" r="2" fill="#4F46E5"/>
+            <path d="M14 21C15 22 19 22 20 21" stroke="#4F46E5" stroke-width="1.8" stroke-linecap="round"/>
+            <circle cx="17" cy="5.5" r="1.5" fill="#06B6D4"/>
+            <line x1="17" y1="7" x2="17" y2="8" stroke="#06B6D4" stroke-width="1.5"/>
+            <defs>
+              <linearGradient id="brandGrad" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#6366F1"/>
+                <stop offset="0.5" stop-color="#8B5CF6"/>
+                <stop offset="1" stop-color="#06B6D4"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="brand-text-wrap">
+          <div class="brand-title">Career Copilot</div>
+          <div class="brand-badge">AI Assistant</div>
+        </div>
+      </div>
+
       <!-- Profile Card -->
       <div class="profile-card">
         <div class="avatar-wrapper">
@@ -155,7 +181,24 @@
       <!-- Chat Header -->
       <header class="chat-header">
         <div class="chat-header-left">
-          <div class="chat-logo" aria-hidden="true">🤖</div>
+          <div class="chat-logo" aria-hidden="true">
+            <svg class="header-logo-svg" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="36" height="36" rx="10" fill="url(#headerGrad)"/>
+              <path d="M10 15C10 11.134 13.134 8 17 8C20.866 8 24 11.134 24 15V22C24 24.7614 21.7614 27 19 27H15C12.2386 27 10 24.7614 10 22V15Z" fill="white" fill-opacity="0.95"/>
+              <circle cx="14" cy="16" r="2" fill="#4F46E5"/>
+              <circle cx="20" cy="16" r="2" fill="#4F46E5"/>
+              <path d="M14 21C15 22 19 22 20 21" stroke="#4F46E5" stroke-width="1.8" stroke-linecap="round"/>
+              <circle cx="17" cy="5.5" r="1.5" fill="#06B6D4"/>
+              <line x1="17" y1="7" x2="17" y2="8" stroke="#06B6D4" stroke-width="1.5"/>
+              <defs>
+                <linearGradient id="headerGrad" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#6366F1"/>
+                  <stop offset="0.5" stop-color="#8B5CF6"/>
+                  <stop offset="1" stop-color="#06B6D4"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
           <div>
             <div class="chat-title" id="current-thread-title">AI Career Copilot</div>
             <div class="chat-subtitle">RAG · FAISS · LangGraph · Google Gemini 3.6 Flash · FastAPI</div>
@@ -186,7 +229,24 @@
 
         <!-- Welcome State -->
         <div class="welcome-state" id="welcome-state">
-          <div class="welcome-icon" aria-hidden="true">🤖</div>
+          <div class="welcome-icon-wrap" aria-hidden="true">
+            <svg class="welcome-logo-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="48" rx="14" fill="url(#welcGrad)"/>
+              <path d="M14 20C14 14.4772 18.4772 10 24 10C29.5228 10 34 14.4772 34 20V30C34 33.3137 31.3137 36 28 36H20C16.6863 36 14 33.3137 14 30V20Z" fill="white" fill-opacity="0.95"/>
+              <circle cx="19" cy="21" r="2.5" fill="#4F46E5"/>
+              <circle cx="29" cy="21" r="2.5" fill="#4F46E5"/>
+              <path d="M19 28C21 30 27 30 29 28" stroke="#4F46E5" stroke-width="2.2" stroke-linecap="round"/>
+              <circle cx="24" cy="6.5" r="2" fill="#06B6D4"/>
+              <line x1="24" y1="8.5" x2="24" y2="10" stroke="#06B6D4" stroke-width="2"/>
+              <defs>
+                <linearGradient id="welcGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#6366F1"/>
+                  <stop offset="0.5" stop-color="#8B5CF6"/>
+                  <stop offset="1" stop-color="#06B6D4"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
           <h1 class="welcome-title">AI Career Copilot</h1>
           <p class="welcome-sub">
             Multi-threaded AI career coach powered by LangGraph & Gemini 3.6 Flash.
