@@ -4,20 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Career Copilot — Fenil Varde</title>
-  <meta name="description" content="AI Career Copilot by Fenil Varde — A RAG-powered AI agent that answers questions about a resume using FAISS, LangGraph, and Ollama. Built with Python, LangChain, and FastAPI." />
-  <meta name="keywords" content="AI, RAG, LangChain, LangGraph, FAISS, Ollama, resume, career, Python, Fenil Varde" />
+  <meta name="description" content="AI Career Copilot by Fenil Varde — Full-Stack RAG AI Agent with PDF Resume Upload, ATS Scoring, Job Description Matcher, Mock Interviewer, and Google Gemini 3.6 Flash." />
+  <meta name="keywords" content="AI, RAG, LangChain, LangGraph, FAISS, Gemini 3.6 Flash, Resume Parser, ATS Scorer, Job Matcher, FastAPI, Python, Fenil Varde" />
   <meta name="author" content="Fenil Varde" />
 
-  <!-- Open Graph (for LinkedIn / social sharing) -->
+  <!-- Open Graph -->
   <meta property="og:title" content="AI Career Copilot — Fenil Varde" />
-  <meta property="og:description" content="A RAG-powered AI agent that answers questions about a resume — locally, privately, with no API key needed." />
+  <meta property="og:description" content="Interactive RAG AI Agent for Resume Q&A, ATS Scoring, and Interview Prep. Powered by Gemini 3.6 Flash & FAISS." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://vardefenil.github.io/ai-career-copilot-project/" />
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="AI Career Copilot — Fenil Varde" />
-  <meta name="twitter:description" content="RAG-powered AI resume agent. FAISS + LangGraph + Ollama + FastAPI." />
 
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
@@ -37,91 +32,108 @@
   <div class="app-container">
 
     <!-- ── Sidebar ───────────────────────────────────────────── -->
-    <aside class="sidebar" role="complementary" aria-label="Profile and quick actions">
+    <aside class="sidebar" role="complementary" aria-label="Profile and AI tools">
 
       <!-- Profile Card -->
       <div class="profile-card">
         <div class="avatar-wrapper">
-          <div class="avatar" aria-label="Fenil Varde profile picture">FV</div>
-          <div class="online-badge" title="AI Agent is ready"></div>
+          <div class="avatar" aria-label="Fenil Varde profile">FV</div>
+          <div class="online-badge" title="AI Agent Ready"></div>
         </div>
         <div class="profile-name">Fenil Varde</div>
         <div class="profile-title">AI/ML Engineer</div>
         <div class="profile-bio">
-          Computer Engineering undergraduate building Python-based AI applications,
-          RAG pipelines, and ML models. Passionate about practical AI.
+          Computer Engineering undergraduate building practical AI systems,
+          RAG architectures, and Machine Learning models.
         </div>
         <!-- Social Links -->
         <div class="social-links">
           <a href="https://github.com/vardefenil" target="_blank" rel="noopener noreferrer"
              class="social-btn" id="github-link" aria-label="GitHub profile">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
             <span>GitHub</span>
           </a>
           <a href="https://www.linkedin.com/in/fenil-varde-58145b318/" target="_blank" rel="noopener noreferrer"
              class="social-btn" id="linkedin-link" aria-label="LinkedIn profile">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
             <span>LinkedIn</span>
           </a>
           <a href="https://leetcode.com/u/vardefenil6/" target="_blank" rel="noopener noreferrer"
              class="social-btn" id="leetcode-link" aria-label="LeetCode profile">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z"/></svg>
             <span>LeetCode</span>
           </a>
         </div>
       </div>
 
-      <!-- Tech Stack -->
+      <!-- Live PDF Upload Section -->
+      <div class="upload-section">
+        <div class="section-label">Custom Resume Upload</div>
+        <div class="upload-box" id="drop-zone" onclick="document.getElementById('pdf-file-input').click()">
+          <input type="file" id="pdf-file-input" accept=".pdf,.txt,.md" style="display:none" />
+          <div class="upload-icon">📄</div>
+          <div class="upload-text" id="upload-text">Upload your PDF / Resume</div>
+          <div class="upload-subtext">Click or drag & drop (re-indexes live)</div>
+        </div>
+      </div>
+
+      <!-- Specialized Career Tools -->
       <div>
-        <div class="section-label">Tech Stack</div>
+        <div class="section-label">AI Career Tools</div>
+        <div class="suggested-qs">
+          <button class="suggested-q-btn tool-btn" onclick="askQuestion('Perform a complete ATS resume scan, calculate my ATS score, and suggest improvements.')">
+            <span class="q-icon">📊</span>ATS Resume Score & Audit
+          </button>
+          <button class="suggested-q-btn tool-btn" onclick="triggerJobMatchModal()">
+            <span class="q-icon">💼</span>Match Job Description (JD)
+          </button>
+          <button class="suggested-q-btn tool-btn" onclick="askQuestion('Simulate a technical mock interview with questions based on my ML projects and ideal answer frameworks.')">
+            <span class="q-icon">🎙️</span>Mock Interview Simulator
+          </button>
+          <button class="suggested-q-btn tool-btn" onclick="askQuestion('Generate a high-conversion cold email and customized cover letter for an AI Engineer role.')">
+            <span class="q-icon">✉️</span>Cold Email & Cover Letter
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Questions -->
+      <div>
+        <div class="section-label">Quick Inquiries</div>
+        <div class="suggested-qs">
+          <button class="suggested-q-btn" onclick="askQuestion('What are Fenil\'s flagship AI & ML projects?')">
+            <span class="q-icon">🚀</span>Flagship AI Projects
+          </button>
+          <button class="suggested-q-btn" onclick="askQuestion('What are his technical skills and libraries?')">
+            <span class="q-icon">🛠️</span>Technical Skills & Stack
+          </button>
+          <button class="suggested-q-btn" onclick="askQuestion('Tell me about his education and CPI')">
+            <span class="q-icon">🎓</span>Education & Academic Background
+          </button>
+          <button class="suggested-q-btn" onclick="askQuestion('How can I contact Fenil?')">
+            <span class="q-icon">📬</span>Contact & Hire Fenil
+          </button>
+        </div>
+      </div>
+
+      <!-- Tech Stack Badges -->
+      <div>
+        <div class="section-label">Tech Architecture</div>
         <div class="tech-badges">
-          <span class="badge badge-purple">Python</span>
-          <span class="badge badge-purple">LangChain</span>
+          <span class="badge badge-purple">Gemini 3.6 Flash</span>
           <span class="badge badge-purple">LangGraph</span>
+          <span class="badge badge-purple">LangChain</span>
+          <span class="badge badge-cyan">FAISS VectorDB</span>
           <span class="badge badge-cyan">FastAPI</span>
-          <span class="badge badge-cyan">FAISS</span>
-          <span class="badge badge-green">Ollama</span>
           <span class="badge badge-green">HuggingFace</span>
-          <span class="badge badge-orange">RAG</span>
-          <span class="badge badge-orange">scikit-learn</span>
+          <span class="badge badge-orange">ReAct Agent</span>
+          <span class="badge badge-orange">RAG Pipeline</span>
         </div>
       </div>
 
       <!-- Mode Indicator -->
       <div class="mode-indicator" id="mode-indicator">
         <div class="mode-dot"></div>
-        <span class="mode-text">Loading...</span>
-      </div>
-
-      <!-- Suggested Questions -->
-      <div>
-        <div class="section-label">Quick Questions</div>
-        <div class="suggested-qs">
-          <button class="suggested-q-btn" onclick="askQuestion('What projects has Fenil built?')" id="q-projects">
-            <span class="q-icon">🚀</span>What projects has Fenil built?
-          </button>
-          <button class="suggested-q-btn" onclick="askQuestion('What are his technical skills?')" id="q-skills">
-            <span class="q-icon">🛠️</span>What are his technical skills?
-          </button>
-          <button class="suggested-q-btn" onclick="askQuestion('Tell me about his education')" id="q-education">
-            <span class="q-icon">🎓</span>Tell me about his education
-          </button>
-          <button class="suggested-q-btn" onclick="askQuestion('What certifications does he have?')" id="q-certs">
-            <span class="q-icon">🏅</span>What certifications does he have?
-          </button>
-          <button class="suggested-q-btn" onclick="askQuestion('How does this RAG system work?')" id="q-rag">
-            <span class="q-icon">🧠</span>How does this RAG system work?
-          </button>
-          <button class="suggested-q-btn" onclick="askQuestion('How can I contact Fenil?')" id="q-contact">
-            <span class="q-icon">📬</span>How can I contact Fenil?
-          </button>
-        </div>
+        <span class="mode-text">Loading mode...</span>
       </div>
 
     </aside>
@@ -135,22 +147,22 @@
           <div class="chat-logo" aria-hidden="true">🤖</div>
           <div>
             <div class="chat-title">AI Career Copilot</div>
-            <div class="chat-subtitle">RAG · FAISS · LangGraph · Ollama · FastAPI</div>
+            <div class="chat-subtitle">RAG · FAISS · LangGraph · Google Gemini 3.6 Flash · FastAPI</div>
           </div>
         </div>
         <div class="header-actions">
-          <button class="header-btn" id="mode-badge" title="Current mode" aria-label="Current mode indicator">
-            🟢 Demo Mode
+          <button class="header-btn" id="mode-badge" title="Current mode">
+            ⚡ Live Mode
           </button>
-          <button class="header-btn" id="clear-btn" title="Clear chat" aria-label="Clear chat history">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <button class="header-btn" id="clear-btn" title="Clear chat">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14H6L5,6"/><path d="M10,11v6"/><path d="M14,11v6"/>
             </svg>
             <span>Clear</span>
           </button>
           <a href="https://github.com/vardefenil/ai-career-copilot-project" target="_blank" rel="noopener noreferrer"
              class="header-btn" id="github-repo-link" aria-label="View source code on GitHub">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
             </svg>
             <span>Source</span>
@@ -159,31 +171,36 @@
       </header>
 
       <!-- Messages Container -->
-      <div class="messages-wrapper" id="messages" role="log" aria-label="Chat messages" aria-live="polite">
+      <div class="messages-wrapper" id="messages" role="log" aria-label="Chat messages">
 
-        <!-- Welcome State (hidden after first message) -->
-        <div class="welcome-state" id="welcome-state" aria-label="Welcome message">
+        <!-- Welcome State -->
+        <div class="welcome-state" id="welcome-state">
           <div class="welcome-icon" aria-hidden="true">🤖</div>
           <h1 class="welcome-title">AI Career Copilot</h1>
           <p class="welcome-sub">
-            Ask me anything about Fenil Varde's resume — projects, skills, education, achievements, or how this RAG system works.
+            All-in-one AI career assistant powered by RAG & Gemini 3.6 Flash.
+            Ask about projects, scan ATS compatibility, simulate mock interviews, or upload your own resume!
           </p>
           <div class="welcome-cards" role="list">
-            <button class="welcome-card" onclick="askQuestion('What projects has Fenil built?')" role="listitem" id="wc-projects">
-              <span class="welcome-card-icon" aria-hidden="true">🚀</span>
-              What projects has Fenil built?
+            <button class="welcome-card" onclick="askQuestion('Perform a complete ATS resume scan, calculate my score, and suggest improvements.')">
+              <span class="welcome-card-icon">📊</span>
+              <strong>ATS Resume Audit</strong>
+              <small>Score (0-100) & missing keywords</small>
             </button>
-            <button class="welcome-card" onclick="askQuestion('What are his technical skills?')" role="listitem" id="wc-skills">
-              <span class="welcome-card-icon" aria-hidden="true">🛠️</span>
-              What are his technical skills?
+            <button class="welcome-card" onclick="triggerJobMatchModal()">
+              <span class="welcome-card-icon">💼</span>
+              <strong>Job Description Match</strong>
+              <small>Compare fit & identify gaps</small>
             </button>
-            <button class="welcome-card" onclick="askQuestion('How does this RAG system work?')" role="listitem" id="wc-rag">
-              <span class="welcome-card-icon" aria-hidden="true">🧠</span>
-              How does this RAG system work?
+            <button class="welcome-card" onclick="askQuestion('Simulate a technical mock interview with questions based on my projects.')">
+              <span class="welcome-card-icon">🎙️</span>
+              <strong>Mock Interview Prep</strong>
+              <small>Technical & STAR questions</small>
             </button>
-            <button class="welcome-card" onclick="askQuestion('How can I contact Fenil?')" role="listitem" id="wc-contact">
-              <span class="welcome-card-icon" aria-hidden="true">📬</span>
-              How can I contact Fenil?
+            <button class="welcome-card" onclick="askQuestion('What are Fenil\'s flagship AI & ML projects?')">
+              <span class="welcome-card-icon">🚀</span>
+              <strong>Explore AI Projects</strong>
+              <small>Fraud detection, RAG & Voice AI</small>
             </button>
           </div>
         </div>
@@ -193,25 +210,46 @@
       <!-- Input Area -->
       <div class="input-area">
         <div class="input-wrapper">
+          <button class="attach-btn" title="Upload custom resume" onclick="document.getElementById('pdf-file-input').click()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+            </svg>
+          </button>
           <textarea
             id="chat-input"
-            placeholder="Ask about Fenil's projects, skills, education…"
+            placeholder="Ask about projects, ATS score, mock interview, or paste a job description…"
             rows="1"
             aria-label="Type your question"
             autocomplete="off"
             spellcheck="true"
           ></textarea>
           <button class="send-btn" id="send-btn" disabled aria-label="Send message" title="Send (Enter)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <line x1="22" y1="2" x2="11" y2="13"></line>
               <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
             </svg>
           </button>
         </div>
-        <p class="input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line · Powered by Llama 3.1 8B via Ollama</p>
+        <p class="input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line · Powered by Gemini 3.6 Flash & FAISS</p>
       </div>
 
     </main>
+  </div>
+
+  <!-- Job Description Modal -->
+  <div class="modal-overlay" id="jd-modal" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>💼 Match Job Description</h3>
+        <button class="modal-close" onclick="closeJobMatchModal()">✕</button>
+      </div>
+      <p class="modal-sub">Paste the Job Description below. The AI will evaluate skill alignment, calculate match percentage, and list gaps.</p>
+      <textarea id="jd-textarea" placeholder="Paste the full job description here (Role, Requirements, Qualifications)..." rows="6"></textarea>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeJobMatchModal()">Cancel</button>
+        <button class="btn-primary" onclick="submitJobMatch()">Analyze Job Match 🚀</button>
+      </div>
+    </div>
   </div>
 
   <script src="app.js"></script>

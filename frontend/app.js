@@ -3,30 +3,109 @@
  * Author: Fenil Varde | github.com/vardefenil
  *
  * Features:
- *  - Demo mode (no backend needed) for GitHub Pages
- *  - Live mode (calls FastAPI backend) when running locally
- *  - Typewriter animation for AI responses
- *  - Responsive chat UI
+ *  - Custom Resume PDF Upload & Live Re-Indexing
+ *  - ATS Scorer, Job Matcher, Mock Interviewer, Cold Email Tools
+ *  - Live Gemini 3.6 Flash mode + Demo mode for GitHub Pages
+ *  - Typewriter animation & Markdown formatting
+ *  - Copy to clipboard
  */
 
 // ── Configuration ───────────────────────────────────────────────────────────
 const CONFIG = {
-  // Detect demo mode: GitHub Pages URL or ?demo=true param
   isDemo: window.location.hostname.includes('github.io') ||
           new URLSearchParams(window.location.search).get('demo') === 'true',
-  apiBase: 'http://localhost:8000',
-  typingSpeed: 12,       // ms per character for typewriter
-  typingVariance: 8,     // random variance in ms
+  apiBase: window.location.origin,
+  typingSpeed: 10,
+  typingVariance: 6,
 };
+
+// If running directly as static file without a server, point API to localhost
+if (window.location.protocol === 'file:') {
+  CONFIG.apiBase = 'http://localhost:8000';
+}
 
 // ── Demo Response Data ───────────────────────────────────────────────────────
 const DEMO_QA = [
+  {
+    keywords: ['ats', 'score', 'audit', 'review resume', 'format'],
+    answer: `📊 **Comprehensive ATS Resume Scan & Score**
+
+### 🎯 Estimated ATS Score: **88 / 100** (Grade: Strong Candidate)
+
+---
+
+### ✅ Key Strengths:
+• **Quantifiable Metrics:** Clear impact points (*"reducing manual review by 60%"*, *"20+ voice command types"*, *"10+ structured fields"*).
+• **Clean Tech Stacks:** Distinct technologies listed per project (Python, scikit-learn, LangChain, FAISS, Flask).
+• **Standard Headings:** Follows universal ATS section conventions (*Summary, Education, Projects, Technical Skills, Certifications*).
+
+### 🔍 Recommended Keywords for AI/ML Roles:
+• Add: \`FastAPI\`, \`Vector Databases\`, \`RAG (Retrieval-Augmented Generation)\`, \`Prompt Engineering\`, \`Docker\`, \`CI/CD\`.
+
+### 🚀 Action Verb Enhancement:
+• *Before:* 'Built an end-to-end fraud detection system...'
+• *After:* 'Architected & deployed a production ML fraud detection pipeline across 4 classifier models with 94%+ ROC-AUC.'`,
+  },
+  {
+    keywords: ['job match', 'match', 'jd', 'job description', 'fit', 'qualif'],
+    answer: `💼 **Job Description Match Analysis**
+
+### 🎯 Match Score: **85% Alignment for AI/ML & Python Developer Roles**
+
+---
+
+### 🟢 Exact Matches Found:
+• **Languages & Frameworks:** Python, C++, scikit-learn, Pandas, NumPy, Flask, FastAPI.
+• **AI / Architecture:** RAG Pipelines, Vector Search (FAISS), ReAct Agents (LangGraph), LLM APIs (Gemini).
+• **Core CS:** Data Structures & Algorithms, OOP, Database Management (SQL).
+
+### 🟡 Recommendations / Next Steps:
+• Emphasize containerization (Docker) and Cloud deployment (AWS/GCP).
+• Highlight the end-to-end RAG workflow built in the AI Career Copilot project during technical rounds.`,
+  },
+  {
+    keywords: ['interview', 'mock', 'prep', 'behavioral', 'questions'],
+    answer: `🎙️ **Tailored Technical & Behavioral Mock Interview**
+
+### 1. Technical Project Deep-Dive (Credit Card Fraud Detection):
+**Q:** *"How did you handle the class imbalance in your fraud detection dataset, and why choose Precision-Recall / ROC-AUC over Accuracy?"*
+👉 **Key talking points:** Mention techniques like SMOTE, class weighting in Random Forest / XGBoost, and how accuracy is deceptive in 99:1 imbalanced transaction data.
+
+### 2. Architecture & RAG (AI Career Copilot):
+**Q:** *"Explain how chunk size and overlap in RecursiveCharacterTextSplitter impact retrieval accuracy in FAISS."*
+👉 **Key talking points:** Discuss context preservation across chunk boundaries (1000 chars with 200 overlap) and avoiding hallucination in LLM prompts.
+
+### 3. Behavioral (STAR Method):
+**Q:** *"Tell me about a challenging bug you encountered while integrating Gemini AI in your voice assistant and how you resolved it."*`,
+  },
+  {
+    keywords: ['cold email', 'email', 'cover letter', 'outreach', 'recruiter'],
+    answer: `✉️ **Tailored Recruiter Outreach & Cover Letter**
+
+### 📬 High-Conversion Cold Email:
+
+**Subject:** B.E. Computer Engineering Student | Applied AI & RAG Developer — Fenil Varde
+
+Hi [Hiring Manager / Recruiter Name],
+
+I've been following [Company Name]'s recent work in AI engineering. As a Computer Engineering undergraduate with hands-on experience building end-to-end RAG systems (LangGraph + FAISS + Gemini) and production ML pipelines (Fraud Detection with XGBoost), I would love to contribute to your engineering team.
+
+A quick look at my work:
+• **AI Career Copilot:** Live RAG agent querying complex unstructured documents with sub-second retrieval.
+• **Fraud Detection System:** Evaluated 4 ML algorithms on imbalanced data with real-time Flask analytics.
+
+Are you open to a brief 10-minute chat this week?
+
+Best regards,
+**Fenil Varde**
+🔗 LinkedIn: linkedin.com/in/fenil-varde-58145b318/ | 🐙 GitHub: github.com/vardefenil`,
+  },
   {
     keywords: ['project', 'built', 'created', 'portfolio', 'app', 'application'],
     answer: `🚀 Here are Fenil's key projects:
 
 **1. AI Career Copilot** (2026 — This Project!)
-→ RAG-based AI agent that answers questions about a resume locally using FAISS + LangGraph + Ollama (Llama 3.1 8B). No API key needed. Zero data leaves your machine.
+→ RAG-based AI agent that answers questions about a resume locally using FAISS + LangGraph + Google Gemini 3.6 Flash. Includes live PDF upload, ATS scoring, and interview prep.
 
 **2. Credit Card Fraud Detection System** (2026)
 → End-to-end fraud detection using Logistic Regression, Random Forest, SVM & XGBoost on highly imbalanced datasets. Built a Flask dashboard for real-time transaction analysis.
@@ -38,13 +117,13 @@ const DEMO_QA = [
 → Voice-controlled desktop assistant with 20+ command types. Integrates Google Gemini AI, NewsAPI, music playback & website navigation.`,
   },
   {
-    keywords: ['skill', 'tech', 'technology', 'language', 'tools', 'stack', 'know', 'expertise', 'use'],
+    keywords: ['skill', 'tech', 'technology', 'language', 'tools', 'stack', 'know', 'expertise'],
     answer: `🛠️ Fenil's Technical Skills:
 
 **Languages:** Python · C++ · HTML · CSS
 
 **AI / ML / RAG:**
-LangChain · LangGraph · FAISS · HuggingFace Transformers · RAG Pipelines · ReAct Agents · Ollama
+LangChain · LangGraph · FAISS · Google Gemini · HuggingFace Transformers · RAG Pipelines · ReAct Agents
 
 **ML Libraries:**
 scikit-learn · NumPy · Pandas · Matplotlib · Seaborn
@@ -53,13 +132,13 @@ scikit-learn · NumPy · Pandas · Matplotlib · Seaborn
 FastAPI · Flask · REST APIs
 
 **Tools & Platforms:**
-Git · GitHub · VS Code · Jupyter Notebook · Ollama
+Git · GitHub · VS Code · Jupyter Notebook
 
 **Concepts:**
 Feature Engineering · Model Evaluation · Cross Validation · Imbalanced Data Handling · Vector Embeddings · Semantic Search`,
   },
   {
-    keywords: ['education', 'college', 'university', 'degree', 'study', 'school', 'gpa', 'cpi', 'grade', 'academic', 'student'],
+    keywords: ['education', 'college', 'university', 'degree', 'study', 'school', 'gpa', 'cpi'],
     answer: `🎓 Education:
 
 **B.E. in Computer Engineering** (2023 – 2027)
@@ -73,38 +152,7 @@ Data Structures · Object-Oriented Programming · Database Management Systems ·
 **Secondary School (Class X):** GSEB — 80.83%`,
   },
   {
-    keywords: ['experience', 'work', 'job', 'internship', 'company', 'role', 'position'],
-    answer: `💼 Experience & Background:
-
-Currently a **3rd-year Computer Engineering student** at LDRP Institute of Technology and Research (2023–2027).
-
-While formal industry experience is still ahead, Fenil has built multiple end-to-end AI/ML projects independently, demonstrating strong practical skills in:
-• RAG systems & LLM orchestration (this project!)
-• Fraud detection with imbalanced ML datasets
-• AI-powered voice assistants using Google Gemini
-• Resume parsing NLP pipelines
-
-**Actively seeking internship opportunities** in AI/ML, Python development, and full-stack roles.`,
-  },
-  {
-    keywords: ['certif', 'achievement', 'award', 'medal', 'judo', 'jee', 'nptel', 'leetcode'],
-    answer: `🏅 Certifications & Achievements:
-
-**Certifications:**
-• NPTEL — Programming in Python (IIT Madras) — Elite Badge (2024)
-
-**Competitive Exams:**
-• JEE Main 2023 — 87.38 Percentile overall
-• 85.42 Percentile in Mathematics among 1M+ candidates
-
-**Sports:**
-• 🥈 Silver Medalist — District Level Judo Competition
-
-**DSA Practice:**
-• Actively solving Data Structures & Algorithms on LeetCode & Codeforces`,
-  },
-  {
-    keywords: ['contact', 'email', 'phone', 'linkedin', 'github', 'reach', 'hire', 'connect', 'social'],
+    keywords: ['contact', 'email', 'phone', 'linkedin', 'github', 'reach', 'hire', 'connect'],
     answer: `📬 Get in touch with Fenil:
 
 📧 **Email:** vardefenil6@gmail.com
@@ -114,25 +162,6 @@ While formal industry experience is still ahead, Fenil has built multiple end-to
 ⚡ **LeetCode:** leetcode.com/u/vardefenil6/
 
 Feel free to reach out for collaborations, internship opportunities, or just to connect! 🤝`,
-  },
-  {
-    keywords: ['rag', 'how', 'work', 'architecture', 'faiss', 'ollama', 'langchain', 'langgraph'],
-    answer: `🧠 How the AI Career Copilot Works:
-
-This project uses **RAG (Retrieval-Augmented Generation)** — a cutting-edge AI technique:
-
-**Step 1 — Ingestion:**
-Resume (PDF/Markdown) → split into chunks → converted to vector embeddings using HuggingFace (all-MiniLM-L6-v2) → stored in a FAISS vector database
-
-**Step 2 — Retrieval:**
-Your query → converted to a vector → FAISS finds the 5 most semantically similar resume chunks
-
-**Step 3 — Generation:**
-Retrieved chunks + your query → fed to Llama 3.1 8B (running locally via Ollama) → natural language answer
-
-**100% Private:** No data ever leaves your machine. No API keys. No cloud calls.
-
-**Tech:** Python · LangChain · LangGraph · FAISS · HuggingFace · Ollama · FastAPI`,
   },
 ];
 
@@ -148,24 +177,42 @@ const sendBtn       = document.getElementById('send-btn');
 const clearBtn      = document.getElementById('clear-btn');
 const modeBadge     = document.getElementById('mode-badge');
 const modeIndicator = document.getElementById('mode-indicator');
+const fileInput     = document.getElementById('pdf-file-input');
+const dropZone      = document.getElementById('drop-zone');
+const uploadText    = document.getElementById('upload-text');
+const jdModal       = document.getElementById('jd-modal');
+const jdTextarea    = document.getElementById('jd-textarea');
 
 // ── Initialization ───────────────────────────────────────────────────────────
 function init() {
   updateModeUI();
   attachEventListeners();
+  setupFileUpload();
   inputEl.focus();
 }
 
-function updateModeUI() {
+async function updateModeUI() {
   if (CONFIG.isDemo) {
     modeBadge.textContent = '🟢 Demo Mode';
-    modeBadge.classList.add('demo-active');
-    modeIndicator.querySelector('.mode-text').textContent =
-      'Demo mode — pre-built answers, no server needed';
-  } else {
-    modeBadge.textContent = '⚡ Live Mode';
-    modeIndicator.querySelector('.mode-text').textContent =
-      'Live mode — powered by Ollama Llama 3.1';
+    modeIndicator.querySelector('.mode-text').textContent = 'Demo mode — pre-built answers (GitHub Pages)';
+    return;
+  }
+
+  try {
+    const res = await fetch(`${CONFIG.apiBase}/health`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.mode === 'live') {
+        modeBadge.textContent = '⚡ Gemini 3.6 Flash (Live)';
+        modeIndicator.querySelector('.mode-text').textContent = 'Live mode — Gemini 3.6 Flash & FAISS';
+      } else {
+        modeBadge.textContent = '🟢 Demo Fallback';
+        modeIndicator.querySelector('.mode-text').textContent = 'Demo fallback — add GEMINI_API_KEY to .env';
+      }
+    }
+  } catch (e) {
+    modeBadge.textContent = '🟢 Demo Mode';
+    modeIndicator.querySelector('.mode-text').textContent = 'Running locally';
   }
 }
 
@@ -179,10 +226,108 @@ function attachEventListeners() {
   });
   inputEl.addEventListener('input', () => {
     inputEl.style.height = 'auto';
-    inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 100) + 'px';
     sendBtn.disabled = inputEl.value.trim() === '';
   });
   clearBtn.addEventListener('click', clearChat);
+}
+
+// ── PDF File Upload Handling ────────────────────────────────────────────────
+function setupFileUpload() {
+  if (!fileInput || !dropZone) return;
+
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+      uploadResumeFile(e.target.files[0]);
+    }
+  });
+
+  // Drag & drop
+  ['dragenter', 'dragover'].forEach(name => {
+    dropZone.addEventListener(name, (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+  });
+
+  ['dragleave', 'drop'].forEach(name => {
+    dropZone.addEventListener(name, (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+    });
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+    if (e.dataTransfer.files.length > 0) {
+      uploadResumeFile(e.dataTransfer.files[0]);
+    }
+  });
+}
+
+async function uploadResumeFile(file) {
+  if (!file) return;
+  if (!file.name.endsWith('.pdf') && !file.name.endsWith('.txt') && !file.name.endsWith('.md')) {
+    showToast('Please upload a .pdf, .txt, or .md file', 'error');
+    return;
+  }
+
+  if (CONFIG.isDemo) {
+    showToast(`Uploaded ${file.name} (Simulated in Demo Mode)`, 'success');
+    uploadText.textContent = `Indexed: ${file.name}`;
+    askQuestion(`I just uploaded ${file.name}. Can you summarize my background and key strengths?`);
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  uploadText.textContent = `Uploading & Vectorizing...`;
+  showToast(`Uploading ${file.name}...`, 'info');
+
+  try {
+    const res = await fetch(`${CONFIG.apiBase}/upload-resume`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || 'Upload failed');
+    }
+
+    const data = await res.json();
+    uploadText.textContent = `Active: ${file.name}`;
+    showToast(`Successfully indexed ${file.name} (${data.chunks_indexed} chunks)!`, 'success');
+
+    // Automatically ask AI about the new resume
+    askQuestion(`I have uploaded a new resume (${file.name}). Please review it, provide an ATS compatibility overview, and list the key projects.`);
+  } catch (err) {
+    uploadText.textContent = 'Upload your PDF / Resume';
+    showToast(`Upload failed: ${err.message}`, 'error');
+  }
+}
+
+// ── Job Match Modal Handlers ────────────────────────────────────────────────
+function triggerJobMatchModal() {
+  if (jdModal) {
+    jdModal.style.display = 'flex';
+    if (jdTextarea) jdTextarea.focus();
+  }
+}
+
+function closeJobMatchModal() {
+  if (jdModal) jdModal.style.display = 'none';
+}
+
+function submitJobMatch() {
+  const jd = jdTextarea.value.trim();
+  if (!jd) {
+    showToast('Please paste a Job Description', 'error');
+    return;
+  }
+  closeJobMatchModal();
+  jdTextarea.value = '';
+  askQuestion(`Here is a target Job Description. Please compare my resume against it, calculate the match percentage, identify any missing skills, and give custom interview talking points:\n\n${jd}`);
 }
 
 // ── Chat Logic ───────────────────────────────────────────────────────────────
@@ -202,7 +347,7 @@ async function handleSend() {
   try {
     let answer;
     if (CONFIG.isDemo) {
-      await delay(600 + Math.random() * 800); // realistic delay
+      await delay(500 + Math.random() * 600);
       answer = getDemoAnswer(query);
     } else {
       answer = await callLiveAPI(query);
@@ -214,7 +359,7 @@ async function handleSend() {
     await addAIMessage(
       `⚠️ **Connection Error**\n\nCould not reach the backend API.\n\n` +
       `Make sure the FastAPI server is running:\n\`\`\`\nuvicorn app.main:app --reload\n\`\`\`\n\n` +
-      `Or use **Demo Mode** (add ?demo=true to the URL).`
+      `Or use **Demo Mode**.`
     );
   }
 
@@ -228,7 +373,7 @@ function getDemoAnswer(query) {
   for (const item of DEMO_QA) {
     if (item.keywords.some(k => q.includes(k))) return item.answer;
   }
-  return `👋 Hi! I'm Fenil's AI Career Copilot.\n\nI can answer questions about:\n🚀 **Projects** — What I've built\n🛠️ **Skills** — Technologies I know\n🎓 **Education** — My academic background\n🏅 **Achievements** — Certifications & awards\n🧠 **How it works** — RAG, FAISS, Ollama architecture\n📬 **Contact** — How to reach Fenil\n\nTry: *"What projects have you built?"* or *"What are your skills?"*`;
+  return `👋 Hi! I'm Fenil's AI Career Copilot.\n\nTry our specialized career tools:\n• 📊 **ATS Audit:** *"Calculate my ATS score"* \n• 💼 **Job Match:** *"Match this job description: [paste JD]"*\n• 🎙️ **Mock Interview:** *"Simulate a technical interview"*\n• ✉️ **Outreach:** *"Write a cold email to a recruiter"*\n• 🚀 **Projects:** *"What AI projects has Fenil built?"*`;
 }
 
 async function callLiveAPI(query) {
@@ -253,7 +398,7 @@ function addUserMessage(text) {
   div.className = 'message user-message';
   div.innerHTML = `
     <div class="msg-avatar user-avatar">F</div>
-    <div>
+    <div class="bubble-container">
       <div class="bubble user-bubble">${escapeHtml(text)}</div>
       <div class="msg-meta">${getTime()}</div>
     </div>`;
@@ -262,24 +407,30 @@ function addUserMessage(text) {
 }
 
 async function addAIMessage(text) {
+  messageCount++;
+  const bubbleId = `ai-bubble-${messageCount}`;
   const div = document.createElement('div');
   div.className = 'message';
   div.innerHTML = `
     <div class="msg-avatar ai-avatar">🤖</div>
-    <div>
-      <div class="bubble ai-bubble" id="ai-bubble-${messageCount}"></div>
-      <div class="msg-meta">${getTime()}</div>
+    <div class="bubble-container">
+      <div class="bubble ai-bubble" id="${bubbleId}"></div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span class="msg-meta">${getTime()}</span>
+        <button class="copy-btn" onclick="copyText(this, \`${escapeJs(text)}\`)">
+          📋 Copy
+        </button>
+      </div>
     </div>`;
   messagesEl.appendChild(div);
   scrollBottom();
 
-  const bubble = div.querySelector('.bubble');
+  const bubble = document.getElementById(bubbleId);
   await typewrite(bubble, text);
 }
 
 async function typewrite(el, text) {
   const formatted = formatMarkdown(text);
-  // For typewriter, work character-by-character on plain text, then render markdown at end
   const chars = text.split('');
   let current = '';
   for (const ch of chars) {
@@ -288,7 +439,7 @@ async function typewrite(el, text) {
     scrollBottom();
     await delay(CONFIG.typingSpeed + Math.random() * CONFIG.typingVariance);
   }
-  el.innerHTML = formatted; // Final render without cursor
+  el.innerHTML = formatted;
 }
 
 function showTypingIndicator() {
@@ -308,16 +459,31 @@ function showTypingIndicator() {
 
 function formatMarkdown(text) {
   return text
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')  // escape first
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')    // **bold**
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')                 // *italic*
-    .replace(/`([^`]+)`/g, '<code>$1</code>')             // `code`
-    .replace(/•\s/g, '• ')                                // bullet points
-    .replace(/\n/g, '<br>');                              // newlines
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+    .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/^---$/gim, '<hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:10px 0;">')
+    .replace(/\n/g, '<br>');
 }
 
 function escapeHtml(text) {
   return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function escapeJs(text) {
+  return text.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+}
+
+function copyText(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.innerHTML;
+    btn.innerHTML = '✅ Copied!';
+    setTimeout(() => btn.innerHTML = original, 2000);
+  });
 }
 
 function clearChat() {
@@ -348,23 +514,21 @@ function delay(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
-// ── Quick Question Handler (called from HTML) ────────────────────────────────
 function askQuestion(text) {
   inputEl.value = text;
   inputEl.dispatchEvent(new Event('input'));
   handleSend();
 }
 
-// ── Toast Notification ───────────────────────────────────────────────────────
 function showToast(msg, type = 'info') {
   const t = document.createElement('div');
   t.className = `toast toast-${type}`;
   t.textContent = msg;
   document.body.appendChild(t);
-  setTimeout(() => t.remove(), 3000);
+  setTimeout(() => t.remove(), 3500);
 }
 
-// ── Cursor blink style (injected) ────────────────────────────────────────────
+// Injected styles
 const cursorStyle = document.createElement('style');
 cursorStyle.textContent = `.cursor { animation: blink 0.7s steps(1) infinite; } @keyframes blink { 50% { opacity: 0; } }`;
 document.head.appendChild(cursorStyle);
