@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Career Copilot — Fenil Varde</title>
-  <meta name="description" content="AI Career Copilot by Fenil Varde — Full-Stack RAG AI Agent with PDF Resume Upload, ATS Scoring, Job Description Matcher, Mock Interviewer, and Google Gemini 3.6 Flash." />
-  <meta name="keywords" content="AI, RAG, LangChain, LangGraph, FAISS, Gemini 3.6 Flash, Resume Parser, ATS Scorer, Job Matcher, FastAPI, Python, Fenil Varde" />
+  <meta name="description" content="AI Career Copilot — Full-Stack RAG Agent with Multi-Session Threads, ATS Scoring, Job Matcher, and Gemini 3.6 Flash." />
   <meta name="author" content="Fenil Varde" />
 
   <!-- Open Graph -->
@@ -16,6 +15,9 @@
 
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
+
+  <!-- Marked.js for fast, full Markdown & Table parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -40,11 +42,9 @@
           <div class="avatar" aria-label="Fenil Varde profile">FV</div>
           <div class="online-badge" title="AI Agent Ready"></div>
         </div>
-        <div class="profile-name">Fenil Varde</div>
-        <div class="profile-title">AI/ML Engineer</div>
-        <div class="profile-bio">
-          Computer Engineering undergraduate building practical AI systems,
-          RAG architectures, and Machine Learning models.
+        <div class="profile-info-group">
+          <div class="profile-name">Fenil Varde</div>
+          <div class="profile-title">AI/ML Engineer</div>
         </div>
         <!-- Social Links -->
         <div class="social-links">
@@ -63,6 +63,19 @@
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z"/></svg>
             <span>LeetCode</span>
           </a>
+        </div>
+      </div>
+
+      <!-- New Chat Button & Chat Sessions -->
+      <div class="sessions-section">
+        <div class="sessions-header">
+          <span class="section-label">Chat Threads</span>
+          <button class="new-chat-btn" onclick="createNewSession()" title="Start a fresh chat thread">
+            <span>+</span> New Chat
+          </button>
+        </div>
+        <div class="session-list" id="session-list">
+          <!-- Dynamically populated session tabs -->
         </div>
       </div>
 
@@ -120,13 +133,11 @@
         <div class="section-label">Tech Architecture</div>
         <div class="tech-badges">
           <span class="badge badge-purple">Gemini 3.6 Flash</span>
-          <span class="badge badge-purple">LangGraph</span>
-          <span class="badge badge-purple">LangChain</span>
+          <span class="badge badge-purple">LangGraph Threads</span>
           <span class="badge badge-cyan">FAISS VectorDB</span>
           <span class="badge badge-cyan">FastAPI</span>
-          <span class="badge badge-green">HuggingFace</span>
+          <span class="badge badge-green">Docker Ready</span>
           <span class="badge badge-orange">ReAct Agent</span>
-          <span class="badge badge-orange">RAG Pipeline</span>
         </div>
       </div>
 
@@ -146,7 +157,7 @@
         <div class="chat-header-left">
           <div class="chat-logo" aria-hidden="true">🤖</div>
           <div>
-            <div class="chat-title">AI Career Copilot</div>
+            <div class="chat-title" id="current-thread-title">AI Career Copilot</div>
             <div class="chat-subtitle">RAG · FAISS · LangGraph · Google Gemini 3.6 Flash · FastAPI</div>
           </div>
         </div>
@@ -154,7 +165,7 @@
           <button class="header-btn" id="mode-badge" title="Current mode">
             ⚡ Live Mode
           </button>
-          <button class="header-btn" id="clear-btn" title="Clear chat">
+          <button class="header-btn" id="clear-btn" title="Clear current chat">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14H6L5,6"/><path d="M10,11v6"/><path d="M14,11v6"/>
             </svg>
@@ -178,8 +189,8 @@
           <div class="welcome-icon" aria-hidden="true">🤖</div>
           <h1 class="welcome-title">AI Career Copilot</h1>
           <p class="welcome-sub">
-            All-in-one AI career assistant powered by RAG & Gemini 3.6 Flash.
-            Ask about projects, scan ATS compatibility, simulate mock interviews, or upload your own resume!
+            Multi-threaded AI career coach powered by LangGraph & Gemini 3.6 Flash.
+            Ask about projects, scan ATS compatibility, simulate mock interviews, or upload custom resumes!
           </p>
           <div class="welcome-cards" role="list">
             <button class="welcome-card" onclick="askQuestion('Perform a complete ATS resume scan, calculate my score, and suggest improvements.')">
@@ -210,7 +221,7 @@
       <!-- Input Area -->
       <div class="input-area">
         <div class="input-wrapper">
-          <button class="attach-btn" title="Upload custom resume" onclick="document.getElementById('pdf-file-input').click()">
+          <button class="attach-btn" title="Upload custom resume (.pdf, .txt, .md)" onclick="document.getElementById('pdf-file-input').click()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
             </svg>
@@ -230,7 +241,7 @@
             </svg>
           </button>
         </div>
-        <p class="input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line · Powered by Gemini 3.6 Flash & FAISS</p>
+        <p class="input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line · Multi-thread Memory & FAISS RAG</p>
       </div>
 
     </main>

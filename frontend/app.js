@@ -3,11 +3,11 @@
  * Author: Fenil Varde | github.com/vardefenil
  *
  * Features:
- *  - Custom Resume PDF Upload & Live Re-Indexing
- *  - ATS Scorer, Job Matcher, Mock Interviewer, Cold Email Tools
- *  - Live Gemini 3.6 Flash mode + Demo mode for GitHub Pages
- *  - Typewriter animation & Markdown formatting
- *  - Copy to clipboard
+ *  - Multi-Session Chat Threads (thread_id management & persistence)
+ *  - Full Markdown & HTML Table parsing via Marked.js
+ *  - Live Resume PDF Upload & Automatic Vector Indexing
+ *  - 5 Specialized AI Tools: ATS Audit, JD Matcher, Mock Interview, Cold Outreach
+ *  - 1-Click Copy & Typewriter streaming
  */
 
 // ── Configuration ───────────────────────────────────────────────────────────
@@ -15,180 +15,295 @@ const CONFIG = {
   isDemo: window.location.hostname.includes('github.io') ||
           new URLSearchParams(window.location.search).get('demo') === 'true',
   apiBase: window.location.origin,
-  typingSpeed: 10,
-  typingVariance: 6,
+  typingSpeed: 6,
+  typingVariance: 4,
 };
 
-// If running directly as static file without a server, point API to localhost
 if (window.location.protocol === 'file:') {
   CONFIG.apiBase = 'http://localhost:8000';
+}
+
+// Configure Marked.js options
+if (typeof marked !== 'undefined') {
+  marked.setOptions({
+    gfm: true,
+    breaks: true,
+  });
 }
 
 // ── Demo Response Data ───────────────────────────────────────────────────────
 const DEMO_QA = [
   {
     keywords: ['ats', 'score', 'audit', 'review resume', 'format'],
-    answer: `📊 **Comprehensive ATS Resume Scan & Score**
+    answer: `### 📊 Comprehensive ATS Resume Scan & Score
 
-### 🎯 Estimated ATS Score: **88 / 100** (Grade: Strong Candidate)
+| Metric | Score / Status | Details |
+| :--- | :--- | :--- |
+| **Overall ATS Score** | **88 / 100** | Grade: Strong Candidate |
+| **Contact & Header** | 10 / 10 | Clean links to GitHub, LinkedIn, LeetCode, Email, Phone |
+| **Formatting & Structure** | 18 / 20 | Standard ATS headers, clean bullet points |
+| **Technical Keywords** | 22 / 25 | Python, scikit-learn, LangChain, FAISS, Flask |
+| **Quantified Impact** | 18 / 20 | 60% review reduction, 20+ commands, 10+ fields |
 
 ---
-
-### ✅ Key Strengths:
-• **Quantifiable Metrics:** Clear impact points (*"reducing manual review by 60%"*, *"20+ voice command types"*, *"10+ structured fields"*).
-• **Clean Tech Stacks:** Distinct technologies listed per project (Python, scikit-learn, LangChain, FAISS, Flask).
-• **Standard Headings:** Follows universal ATS section conventions (*Summary, Education, Projects, Technical Skills, Certifications*).
 
 ### 🔍 Recommended Keywords for AI/ML Roles:
 • Add: \`FastAPI\`, \`Vector Databases\`, \`RAG (Retrieval-Augmented Generation)\`, \`Prompt Engineering\`, \`Docker\`, \`CI/CD\`.
 
 ### 🚀 Action Verb Enhancement:
-• *Before:* 'Built an end-to-end fraud detection system...'
-• *After:* 'Architected & deployed a production ML fraud detection pipeline across 4 classifier models with 94%+ ROC-AUC.'`,
+• **Before:** *'Built an end-to-end fraud detection system...'*
+• **After:** *'Architected & deployed a production ML fraud detection pipeline across 4 classifier models with 94%+ ROC-AUC.'*`,
   },
   {
     keywords: ['job match', 'match', 'jd', 'job description', 'fit', 'qualif'],
-    answer: `💼 **Job Description Match Analysis**
+    answer: `### 💼 Job Description Match Analysis
 
-### 🎯 Match Score: **85% Alignment for AI/ML & Python Developer Roles**
+| Category | Match % | Key Highlights |
+| :--- | :--- | :--- |
+| **Overall Alignment** | **85%** | Strong fit for AI/ML & Python Developer Roles |
+| **Core Languages** | 95% | Python, C++, HTML, CSS |
+| **AI & Frameworks** | 90% | RAG Pipelines, FAISS Vector Search, LangGraph, Gemini |
+| **Data & Modeling** | 85% | scikit-learn, Pandas, NumPy, Feature Engineering |
 
 ---
 
-### 🟢 Exact Matches Found:
-• **Languages & Frameworks:** Python, C++, scikit-learn, Pandas, NumPy, Flask, FastAPI.
-• **AI / Architecture:** RAG Pipelines, Vector Search (FAISS), ReAct Agents (LangGraph), LLM APIs (Gemini).
-• **Core CS:** Data Structures & Algorithms, OOP, Database Management (SQL).
+### 🟢 Exact Matches:
+• **Languages & Tools:** Python, C++, scikit-learn, Pandas, NumPy, Flask, FastAPI, Git, SQL.
+• **AI Architectures:** RAG, Vector Search, ReAct Agents, Embedding Pipelines.
 
-### 🟡 Recommendations / Next Steps:
-• Emphasize containerization (Docker) and Cloud deployment (AWS/GCP).
-• Highlight the end-to-end RAG workflow built in the AI Career Copilot project during technical rounds.`,
+### 🟡 Growth Opportunities:
+• Add containerization (**Docker**) and cloud deployment (**GCP/AWS**) to your projects.`,
   },
   {
     keywords: ['interview', 'mock', 'prep', 'behavioral', 'questions'],
-    answer: `🎙️ **Tailored Technical & Behavioral Mock Interview**
+    answer: `### 🎙️ Tailored Technical & Behavioral Mock Interview
 
-### 1. Technical Project Deep-Dive (Credit Card Fraud Detection):
-**Q:** *"How did you handle the class imbalance in your fraud detection dataset, and why choose Precision-Recall / ROC-AUC over Accuracy?"*
-👉 **Key talking points:** Mention techniques like SMOTE, class weighting in Random Forest / XGBoost, and how accuracy is deceptive in 99:1 imbalanced transaction data.
+#### 1. Technical Project Deep-Dive (Credit Card Fraud Detection):
+* **Question:** *"How did you handle class imbalance in your fraud dataset, and why choose Precision-Recall over Accuracy?"*
+* 👉 **Key talking points:** Mention SMOTE, class weights in Random Forest / XGBoost, and why high accuracy is misleading in 99:1 imbalanced data.
 
-### 2. Architecture & RAG (AI Career Copilot):
-**Q:** *"Explain how chunk size and overlap in RecursiveCharacterTextSplitter impact retrieval accuracy in FAISS."*
-👉 **Key talking points:** Discuss context preservation across chunk boundaries (1000 chars with 200 overlap) and avoiding hallucination in LLM prompts.
+#### 2. Architecture & RAG (AI Career Copilot):
+* **Question:** *"Explain how chunk size and overlap impact semantic retrieval accuracy in FAISS."*
+* 👉 **Key talking points:** Discuss context boundaries (1000 chars / 200 overlap) and preventing LLM hallucinations.
 
-### 3. Behavioral (STAR Method):
-**Q:** *"Tell me about a challenging bug you encountered while integrating Gemini AI in your voice assistant and how you resolved it."*`,
+#### 3. Behavioral (STAR Method):
+* **Question:** *"Tell me about a challenging bug you encountered while integrating Gemini AI in your voice assistant and how you resolved it."*`,
   },
   {
     keywords: ['cold email', 'email', 'cover letter', 'outreach', 'recruiter'],
-    answer: `✉️ **Tailored Recruiter Outreach & Cover Letter**
+    answer: `### ✉️ Recruiter Cold Outreach & Cover Letter
 
-### 📬 High-Conversion Cold Email:
-
+#### 📬 High-Conversion Cold Email:
 **Subject:** B.E. Computer Engineering Student | Applied AI & RAG Developer — Fenil Varde
 
-Hi [Hiring Manager / Recruiter Name],
+Hi [Hiring Manager Name],
 
 I've been following [Company Name]'s recent work in AI engineering. As a Computer Engineering undergraduate with hands-on experience building end-to-end RAG systems (LangGraph + FAISS + Gemini) and production ML pipelines (Fraud Detection with XGBoost), I would love to contribute to your engineering team.
 
-A quick look at my work:
+**Flagship Work:**
 • **AI Career Copilot:** Live RAG agent querying complex unstructured documents with sub-second retrieval.
 • **Fraud Detection System:** Evaluated 4 ML algorithms on imbalanced data with real-time Flask analytics.
 
 Are you open to a brief 10-minute chat this week?
 
-Best regards,
-**Fenil Varde**
+Best regards,  
+**Fenil Varde**  
 🔗 LinkedIn: linkedin.com/in/fenil-varde-58145b318/ | 🐙 GitHub: github.com/vardefenil`,
   },
   {
     keywords: ['project', 'built', 'created', 'portfolio', 'app', 'application'],
-    answer: `🚀 Here are Fenil's key projects:
+    answer: `### 🚀 Key Projects on Fenil's Resume:
 
-**1. AI Career Copilot** (2026 — This Project!)
-→ RAG-based AI agent that answers questions about a resume locally using FAISS + LangGraph + Google Gemini 3.6 Flash. Includes live PDF upload, ATS scoring, and interview prep.
+1. **AI Career Copilot** *(2026 — Flagship)*
+   * **Tech:** Python, LangGraph, FAISS, Google Gemini 3.6 Flash, FastAPI.
+   * **Highlights:** Full RAG pipeline with live PDF upload & re-indexing, ATS scoring, and interview prep.
 
-**2. Credit Card Fraud Detection System** (2026)
-→ End-to-end fraud detection using Logistic Regression, Random Forest, SVM & XGBoost on highly imbalanced datasets. Built a Flask dashboard for real-time transaction analysis.
+2. **Credit Card Fraud Detection System** *(2026)*
+   * **Tech:** Python, scikit-learn, Pandas, Flask.
+   * **Highlights:** Trained Logistic Regression, Random Forest, SVM & XGBoost on highly imbalanced transaction datasets.
 
-**3. AI-Based Resume Analytics Tool** (2026)
-→ Parses PDF resumes, extracts 10+ structured fields (skills, education, experience) using Python, Flask & NLP. Reduced manual review effort by ~60%.
+3. **AI-Based Resume Analytics Tool** *(2026)*
+   * **Tech:** Python, Flask, NLP, scikit-learn.
+   * **Highlights:** Parsed PDF resumes, extracted 10+ structured fields, reduced manual review effort by 60%.
 
-**4. AI-Powered Voice Assistant** (2024)
-→ Voice-controlled desktop assistant with 20+ command types. Integrates Google Gemini AI, NewsAPI, music playback & website navigation.`,
+4. **AI-Powered Voice Assistant** *(2024)*
+   * **Tech:** Python, Google Gemini AI, NewsAPI.
+   * **Highlights:** Voice-controlled desktop assistant with 20+ command types and real-time news.`,
   },
   {
-    keywords: ['skill', 'tech', 'technology', 'language', 'tools', 'stack', 'know', 'expertise'],
-    answer: `🛠️ Fenil's Technical Skills:
+    keywords: ['skill', 'tech', 'technology', 'language', 'tools', 'stack', 'know'],
+    answer: `### 🛠️ Technical Skills & Tooling:
 
-**Languages:** Python · C++ · HTML · CSS
-
-**AI / ML / RAG:**
-LangChain · LangGraph · FAISS · Google Gemini · HuggingFace Transformers · RAG Pipelines · ReAct Agents
-
-**ML Libraries:**
-scikit-learn · NumPy · Pandas · Matplotlib · Seaborn
-
-**Web & Backend:**
-FastAPI · Flask · REST APIs
-
-**Tools & Platforms:**
-Git · GitHub · VS Code · Jupyter Notebook
-
-**Concepts:**
-Feature Engineering · Model Evaluation · Cross Validation · Imbalanced Data Handling · Vector Embeddings · Semantic Search`,
+* **Programming Languages:** Python, C++, HTML, CSS
+* **AI / ML Frameworks:** LangChain, LangGraph, FAISS, Google Gemini, HuggingFace, scikit-learn
+* **Data Science Libraries:** NumPy, Pandas, Matplotlib, Seaborn
+* **Web & Backend:** FastAPI, Flask, REST APIs, SQL
+* **Developer Tools:** Git, GitHub, VS Code, Jupyter Notebook, Docker`,
   },
   {
     keywords: ['education', 'college', 'university', 'degree', 'study', 'school', 'gpa', 'cpi'],
-    answer: `🎓 Education:
+    answer: `### 🎓 Education Background:
 
-**B.E. in Computer Engineering** (2023 – 2027)
-LDRP Institute of Technology and Research, Gandhinagar, Gujarat
-CPI: 7.66 / 10.00
+* **Bachelor of Engineering in Computer Engineering** (2023 – 2027)
+  * **Institute:** LDRP Institute of Technology and Research, Gandhinagar, Gujarat
+  * **CPI:** **7.66 / 10.00**
+  * **Coursework:** Data Structures & Algorithms, OOP, Database Management Systems, Operating Systems
 
-**Relevant Coursework:**
-Data Structures · Object-Oriented Programming · Database Management Systems · Operating Systems
-
-**Higher Secondary (Class XII):** GSEB Science — 56.92%
-**Secondary School (Class X):** GSEB — 80.83%`,
+* **Higher Secondary (Class XII, GSEB Science - 2023):** 56.92%
+* **Secondary School (Class X, GSEB - 2021):** 80.83%`,
   },
   {
-    keywords: ['contact', 'email', 'phone', 'linkedin', 'github', 'reach', 'hire', 'connect'],
-    answer: `📬 Get in touch with Fenil:
+    keywords: ['contact', 'email', 'phone', 'linkedin', 'github', 'reach', 'hire'],
+    answer: `### 📬 Contact & Connect with Fenil:
 
-📧 **Email:** vardefenil6@gmail.com
-📱 **Phone:** +91 87804 71545
-💼 **LinkedIn:** linkedin.com/in/fenil-varde-58145b318/
-🐙 **GitHub:** github.com/vardefenil
-⚡ **LeetCode:** leetcode.com/u/vardefenil6/
-
-Feel free to reach out for collaborations, internship opportunities, or just to connect! 🤝`,
+* 📧 **Email:** [vardefenil6@gmail.com](mailto:vardefenil6@gmail.com)
+* 📱 **Phone:** +91 87804 71545
+* 💼 **LinkedIn:** [fenil-varde-58145b318](https://linkedin.com/in/fenil-varde-58145b318/)
+* 🐙 **GitHub:** [vardefenil](https://github.com/vardefenil)
+* ⚡ **LeetCode:** [vardefenil6](https://leetcode.com/u/vardefenil6/)`,
   },
 ];
 
-// ── State ────────────────────────────────────────────────────────────────────
+// ── State Management (Threads & Sessions) ───────────────────────────────────
+let currentThreadId = null;
+let sessions = {}; // { threadId: { id, title, messages: [{role, text, time}], updatedAt } }
 let isTyping = false;
-let messageCount = 0;
 
 // ── DOM References ───────────────────────────────────────────────────────────
-const messagesEl    = document.getElementById('messages');
-const welcomeEl     = document.getElementById('welcome-state');
-const inputEl       = document.getElementById('chat-input');
-const sendBtn       = document.getElementById('send-btn');
-const clearBtn      = document.getElementById('clear-btn');
-const modeBadge     = document.getElementById('mode-badge');
-const modeIndicator = document.getElementById('mode-indicator');
-const fileInput     = document.getElementById('pdf-file-input');
-const dropZone      = document.getElementById('drop-zone');
-const uploadText    = document.getElementById('upload-text');
-const jdModal       = document.getElementById('jd-modal');
-const jdTextarea    = document.getElementById('jd-textarea');
+const messagesEl         = document.getElementById('messages');
+const welcomeEl          = document.getElementById('welcome-state');
+const inputEl            = document.getElementById('chat-input');
+const sendBtn            = document.getElementById('send-btn');
+const clearBtn           = document.getElementById('clear-btn');
+const modeBadge          = document.getElementById('mode-badge');
+const modeIndicator      = document.getElementById('mode-indicator');
+const sessionListEl      = document.getElementById('session-list');
+const currentThreadTitle = document.getElementById('current-thread-title');
+const fileInput          = document.getElementById('pdf-file-input');
+const dropZone           = document.getElementById('drop-zone');
+const uploadText         = document.getElementById('upload-text');
+const jdModal            = document.getElementById('jd-modal');
+const jdTextarea         = document.getElementById('jd-textarea');
 
 // ── Initialization ───────────────────────────────────────────────────────────
 function init() {
+  loadSessionsFromStorage();
   updateModeUI();
   attachEventListeners();
   setupFileUpload();
   inputEl.focus();
+}
+
+// ── Session & Thread Management ──────────────────────────────────────────────
+function generateThreadId() {
+  return 'thread_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+}
+
+function loadSessionsFromStorage() {
+  try {
+    const saved = localStorage.getItem('ai_career_sessions');
+    if (saved) {
+      sessions = JSON.parse(saved);
+    }
+  } catch (e) {
+    sessions = {};
+  }
+
+  const threadIds = Object.keys(sessions);
+  if (threadIds.length === 0) {
+    createNewSession('New Chat');
+  } else {
+    // Select the most recent session
+    threadIds.sort((a, b) => (sessions[b].updatedAt || 0) - (sessions[a].updatedAt || 0));
+    switchSession(threadIds[0]);
+  }
+}
+
+function saveSessionsToStorage() {
+  try {
+    localStorage.setItem('ai_career_sessions', JSON.stringify(sessions));
+  } catch (e) {}
+}
+
+function createNewSession(customTitle) {
+  const newId = generateThreadId();
+  sessions[newId] = {
+    id: newId,
+    title: customTitle || 'New Conversation',
+    messages: [],
+    updatedAt: Date.now(),
+  };
+  saveSessionsToStorage();
+  switchSession(newId);
+}
+
+function switchSession(threadId) {
+  if (!sessions[threadId]) return;
+  currentThreadId = threadId;
+  renderSessionList();
+  renderCurrentSessionMessages();
+
+  if (currentThreadTitle) {
+    currentThreadTitle.textContent = sessions[threadId].title || 'AI Career Copilot';
+  }
+}
+
+function deleteSession(e, threadId) {
+  e.stopPropagation();
+  delete sessions[threadId];
+  saveSessionsToStorage();
+
+  const remaining = Object.keys(sessions);
+  if (remaining.length === 0) {
+    createNewSession('New Chat');
+  } else if (currentThreadId === threadId) {
+    switchSession(remaining[0]);
+  } else {
+    renderSessionList();
+  }
+}
+
+function renderSessionList() {
+  if (!sessionListEl) return;
+  sessionListEl.innerHTML = '';
+
+  const threadIds = Object.keys(sessions);
+  threadIds.sort((a, b) => (sessions[b].updatedAt || 0) - (sessions[a].updatedAt || 0));
+
+  threadIds.forEach(id => {
+    const sess = sessions[id];
+    const item = document.createElement('div');
+    item.className = `session-item ${id === currentThreadId ? 'active' : ''}`;
+    item.onclick = () => switchSession(id);
+    item.innerHTML = `
+      <span class="session-title" title="${escapeHtml(sess.title)}">💬 ${escapeHtml(sess.title)}</span>
+      <button class="session-del-btn" onclick="deleteSession(event, '${id}')" title="Delete thread">✕</button>
+    `;
+    sessionListEl.appendChild(item);
+  });
+}
+
+function renderCurrentSessionMessages() {
+  messagesEl.innerHTML = '';
+  const current = sessions[currentThreadId];
+  if (!current || current.messages.length === 0) {
+    if (welcomeEl) {
+      welcomeEl.style.display = 'flex';
+      messagesEl.appendChild(welcomeEl);
+    }
+    return;
+  }
+
+  if (welcomeEl) welcomeEl.style.display = 'none';
+
+  current.messages.forEach(msg => {
+    if (msg.role === 'user') {
+      renderUserMessageBubble(msg.text, msg.time);
+    } else {
+      renderAIMessageBubble(msg.text, msg.time);
+    }
+  });
+  scrollBottom();
 }
 
 async function updateModeUI() {
@@ -212,7 +327,6 @@ async function updateModeUI() {
     }
   } catch (e) {
     modeBadge.textContent = '🟢 Demo Mode';
-    modeIndicator.querySelector('.mode-text').textContent = 'Running locally';
   }
 }
 
@@ -229,7 +343,13 @@ function attachEventListeners() {
     inputEl.style.height = Math.min(inputEl.scrollHeight, 100) + 'px';
     sendBtn.disabled = inputEl.value.trim() === '';
   });
-  clearBtn.addEventListener('click', clearChat);
+  clearBtn.addEventListener('click', () => {
+    if (sessions[currentThreadId]) {
+      sessions[currentThreadId].messages = [];
+      saveSessionsToStorage();
+      renderCurrentSessionMessages();
+    }
+  });
 }
 
 // ── PDF File Upload Handling ────────────────────────────────────────────────
@@ -242,7 +362,6 @@ function setupFileUpload() {
     }
   });
 
-  // Drag & drop
   ['dragenter', 'dragover'].forEach(name => {
     dropZone.addEventListener(name, (e) => {
       e.preventDefault();
@@ -299,8 +418,9 @@ async function uploadResumeFile(file) {
     uploadText.textContent = `Active: ${file.name}`;
     showToast(`Successfully indexed ${file.name} (${data.chunks_indexed} chunks)!`, 'success');
 
-    // Automatically ask AI about the new resume
-    askQuestion(`I have uploaded a new resume (${file.name}). Please review it, provide an ATS compatibility overview, and list the key projects.`);
+    // Automatically trigger analysis on the new resume
+    createNewSession(`Resume: ${file.name}`);
+    askQuestion(`I have uploaded a new resume (${file.name}). Please review it, provide an ATS compatibility score & overview, and list the key projects.`);
   } catch (err) {
     uploadText.textContent = 'Upload your PDF / Resume';
     showToast(`Upload failed: ${err.message}`, 'error');
@@ -327,6 +447,7 @@ function submitJobMatch() {
   }
   closeJobMatchModal();
   jdTextarea.value = '';
+  createNewSession('Job Match Audit');
   askQuestion(`Here is a target Job Description. Please compare my resume against it, calculate the match percentage, identify any missing skills, and give custom interview talking points:\n\n${jd}`);
 }
 
@@ -336,7 +457,17 @@ async function handleSend() {
   if (!query || isTyping) return;
 
   hideWelcome();
-  addUserMessage(query);
+
+  // Auto-generate session title from first query
+  if (sessions[currentThreadId] && sessions[currentThreadId].messages.length === 0) {
+    const shortTitle = query.length > 24 ? query.substring(0, 24) + '...' : query;
+    sessions[currentThreadId].title = shortTitle;
+    if (currentThreadTitle) currentThreadTitle.textContent = shortTitle;
+    renderSessionList();
+  }
+
+  const timeStr = getTime();
+  addUserMessage(query, timeStr);
   clearInput();
 
   isTyping = true;
@@ -347,19 +478,20 @@ async function handleSend() {
   try {
     let answer;
     if (CONFIG.isDemo) {
-      await delay(500 + Math.random() * 600);
+      await delay(400 + Math.random() * 500);
       answer = getDemoAnswer(query);
     } else {
-      answer = await callLiveAPI(query);
+      answer = await callLiveAPI(query, currentThreadId);
     }
     removeElement(typingEl);
-    await addAIMessage(answer);
+    await addAIMessage(answer, getTime());
   } catch (err) {
     removeElement(typingEl);
     await addAIMessage(
       `⚠️ **Connection Error**\n\nCould not reach the backend API.\n\n` +
       `Make sure the FastAPI server is running:\n\`\`\`\nuvicorn app.main:app --reload\n\`\`\`\n\n` +
-      `Or use **Demo Mode**.`
+      `Or use **Demo Mode**.`,
+      getTime()
     );
   }
 
@@ -373,42 +505,55 @@ function getDemoAnswer(query) {
   for (const item of DEMO_QA) {
     if (item.keywords.some(k => q.includes(k))) return item.answer;
   }
-  return `👋 Hi! I'm Fenil's AI Career Copilot.\n\nTry our specialized career tools:\n• 📊 **ATS Audit:** *"Calculate my ATS score"* \n• 💼 **Job Match:** *"Match this job description: [paste JD]"*\n• 🎙️ **Mock Interview:** *"Simulate a technical interview"*\n• ✉️ **Outreach:** *"Write a cold email to a recruiter"*\n• 🚀 **Projects:** *"What AI projects has Fenil built?"*`;
+  return `### 👋 Hi! I'm Fenil's AI Career Copilot.\n\nTry our specialized career tools:\n• 📊 **ATS Audit:** *"Calculate my ATS score"* \n• 💼 **Job Match:** *"Match this job description: [paste JD]"*\n• 🎙️ **Mock Interview:** *"Simulate a technical interview"*\n• ✉️ **Outreach:** *"Write a cold email to a recruiter"*\n• 🚀 **Projects:** *"What AI projects has Fenil built?"*`;
 }
 
-async function callLiveAPI(query) {
+async function callLiveAPI(query, threadId) {
   const res = await fetch(`${CONFIG.apiBase}/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query, demo: false }),
+    body: JSON.stringify({ query, thread_id: threadId, demo: false }),
   });
   if (!res.ok) throw new Error(`API error ${res.status}`);
   const data = await res.json();
   return data.answer;
 }
 
-// ── UI Helpers ───────────────────────────────────────────────────────────────
+// ── UI Message Rendering ─────────────────────────────────────────────────────
 function hideWelcome() {
   if (welcomeEl) welcomeEl.style.display = 'none';
 }
 
-function addUserMessage(text) {
-  messageCount++;
+function addUserMessage(text, timeStr) {
+  if (sessions[currentThreadId]) {
+    sessions[currentThreadId].messages.push({ role: 'user', text, time: timeStr });
+    sessions[currentThreadId].updatedAt = Date.now();
+    saveSessionsToStorage();
+  }
+  renderUserMessageBubble(text, timeStr);
+}
+
+function renderUserMessageBubble(text, timeStr) {
   const div = document.createElement('div');
   div.className = 'message user-message';
   div.innerHTML = `
     <div class="msg-avatar user-avatar">F</div>
     <div class="bubble-container">
       <div class="bubble user-bubble">${escapeHtml(text)}</div>
-      <div class="msg-meta">${getTime()}</div>
+      <div class="msg-meta">${timeStr || getTime()}</div>
     </div>`;
   messagesEl.appendChild(div);
   scrollBottom();
 }
 
-async function addAIMessage(text) {
-  messageCount++;
-  const bubbleId = `ai-bubble-${messageCount}`;
+async function addAIMessage(text, timeStr) {
+  if (sessions[currentThreadId]) {
+    sessions[currentThreadId].messages.push({ role: 'ai', text, time: timeStr });
+    sessions[currentThreadId].updatedAt = Date.now();
+    saveSessionsToStorage();
+  }
+
+  const bubbleId = `ai-bubble-${Date.now()}`;
   const div = document.createElement('div');
   div.className = 'message';
   div.innerHTML = `
@@ -416,7 +561,7 @@ async function addAIMessage(text) {
     <div class="bubble-container">
       <div class="bubble ai-bubble" id="${bubbleId}"></div>
       <div style="display:flex; align-items:center; gap:8px;">
-        <span class="msg-meta">${getTime()}</span>
+        <span class="msg-meta">${timeStr || getTime()}</span>
         <button class="copy-btn" onclick="copyText(this, \`${escapeJs(text)}\`)">
           📋 Copy
         </button>
@@ -429,17 +574,50 @@ async function addAIMessage(text) {
   await typewrite(bubble, text);
 }
 
+function renderAIMessageBubble(text, timeStr) {
+  const div = document.createElement('div');
+  div.className = 'message';
+  div.innerHTML = `
+    <div class="msg-avatar ai-avatar">🤖</div>
+    <div class="bubble-container">
+      <div class="bubble ai-bubble">${renderMarkdown(text)}</div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span class="msg-meta">${timeStr || getTime()}</span>
+        <button class="copy-btn" onclick="copyText(this, \`${escapeJs(text)}\`)">
+          📋 Copy
+        </button>
+      </div>
+    </div>`;
+  messagesEl.appendChild(div);
+}
+
 async function typewrite(el, text) {
-  const formatted = formatMarkdown(text);
+  const formatted = renderMarkdown(text);
   const chars = text.split('');
   let current = '';
-  for (const ch of chars) {
-    current += ch;
-    el.innerHTML = formatMarkdown(current) + '<span class="cursor">▊</span>';
+  for (let i = 0; i < chars.length; i += 2) {
+    current += chars.slice(i, i + 2).join('');
+    el.innerHTML = renderMarkdown(current) + '<span class="cursor">▊</span>';
     scrollBottom();
-    await delay(CONFIG.typingSpeed + Math.random() * CONFIG.typingVariance);
+    await delay(CONFIG.typingSpeed);
   }
   el.innerHTML = formatted;
+}
+
+function renderMarkdown(text) {
+  if (typeof marked !== 'undefined') {
+    try {
+      return marked.parse(text);
+    } catch (e) {}
+  }
+  // Fallback if marked fails
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+    .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br>');
 }
 
 function showTypingIndicator() {
@@ -457,19 +635,6 @@ function showTypingIndicator() {
   return wrapper;
 }
 
-function formatMarkdown(text) {
-  return text
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-    .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
-    .replace(/^---$/gim, '<hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:10px 0;">')
-    .replace(/\n/g, '<br>');
-}
-
 function escapeHtml(text) {
   return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
@@ -484,12 +649,6 @@ function copyText(btn, text) {
     btn.innerHTML = '✅ Copied!';
     setTimeout(() => btn.innerHTML = original, 2000);
   });
-}
-
-function clearChat() {
-  messagesEl.innerHTML = '';
-  if (welcomeEl) welcomeEl.style.display = 'flex';
-  messageCount = 0;
 }
 
 function clearInput() {
